@@ -1,0 +1,20 @@
+method: 'test_cnn'
+model_dir: './logs/experiment_sgd'
+
+checkpoint_path: './logs/experiment_sgd/export/best_exporter/1582139681/variables/variables'
+
+kwargs:
+  splits: './data/splits.json'
+  train_transforms:
+    scale_to_fit:
+      image_size: [256, 256]
+  test_transforms:
+    scale_to_fit:
+      image_size: [256, 256]
+  image_size: [256, 256]
+
+  test_dataloading:
+    batch_params:
+      batch_size: 8
+    prefetch_params:
+      buffer_size: -1

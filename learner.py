@@ -18,9 +18,9 @@ class Learner(Estimator):
         self.test_files = files['test']
         self.test_transforms = kwargs['test_transforms']
         self.image_size = kwargs['image_size']
-        self.train_dataloading = kwargs['train_dataloading']
+        self.train_dataloading = kwargs.get('train_dataloading', {})
         self.test_dataloading = kwargs['test_dataloading']
-        self.train_max_steps = kwargs['train_max_steps']
+        self.train_max_steps = kwargs.get('train_max_steps', 1000)
 
         warm_start_from = kwargs.get('warm_start_from', None)
         vars_to_warm_start = kwargs.get('vars_to_warm_start', '.*')
@@ -35,7 +35,7 @@ class Learner(Estimator):
             'save_checkpoints_steps', 1000)
         save_summary_steps = kwargs.get('save_summary_steps', 1000)
         tf_random_seed = kwargs.get('tf_random_seed', None)
-        self.model_params = kwargs['model_params']
+        self.model_params = kwargs.get('model_params', {})
 
         allow_growth = kwargs.get('allow_growth', True)
         config = None
@@ -52,7 +52,6 @@ class Learner(Estimator):
         super(Learner, self).__init__(model_fn, model_dir, run_config,
                                 self.model_params, self.ws)
 
-        self.iterator = None
         self.output_shapes = {'image': tf.TensorShape([self.image_size[0],
                                                        self.image_size[1], 3])}, \
                              {'label': tf.TensorShape([])}
@@ -69,7 +68,8 @@ class Learner(Estimator):
         return [best_exporter, latest_exporter]
 
     def train_dataset(self):
-        return NailsDataset(self.train_files, self.train_transforms)
+        return NailsDataset(self.train_files, self.train_transforms,
+                            do_augmentations=True)
 
     def get_train_kwargs(self):
         return {'input_fn': self.create_input_fn(), 'hooks': [],
@@ -82,6 +82,11 @@ class Learner(Estimator):
         return {'input_fn': self.create_input_fn(is_train=False),
                 'steps': len(self.test_dataset()), 'hooks': [],
                 'checkpoint_path': checkpoint_path}
+
+    def get_predict_kwargs(self, checkpoint_path):
+        return {'input_fn': self.create_input_fn(is_train=False),
+                'hooks': [], 'checkpoint_path': checkpoint_path,
+                'yield_single_examples': True}
 
     def get_train_and_eval_kwargs(self, start_delay_secs=60,
                                   throttle_secs=60):

@@ -9,15 +9,15 @@ from AutoAugment import autoaugment
 
 class NailsDataset:
 
-    def __init__(self, files, transforms):
+    def __init__(self, files, transforms, do_augmentations=False):
         self.files = files
         self.transforms = transforms
         self.aug_policy = autoaugment.ImageNetPolicy()
+        self.do_augmentations = do_augmentations
 
     def __getitem__(self, index):
         file = self.files[index]
         image = cv2.imread(file)
-        # TODO: preprocess..
 
         for fn_name, kwargs in self.transforms.items():
             fn = getattr(preprocess, fn_name)
@@ -25,7 +25,7 @@ class NailsDataset:
 
         label = 1 if '_good' in file else 0
 
-        if random.randint(0, 1) == 1:
+        if random.randint(0, 1) == 1 and self.do_augmentations:
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image = Image.fromarray(image)
             image = self.aug_policy(image)

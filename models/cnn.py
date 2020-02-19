@@ -80,9 +80,7 @@ def model_fn(features, labels, mode, params):
 
     eval_metric_ops = {
         'accuracy': tf.metrics.accuracy(
-            labels=label, predictions=predictions['class']),
-        'confusion_matrix': tf.math.confusion_matrix(
-            label, predictions=predictions['class'])
+            labels=label, predictions=predictions['class'])
     }
 
     return tf.estimator.EstimatorSpec(

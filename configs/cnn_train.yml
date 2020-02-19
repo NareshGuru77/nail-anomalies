@@ -10,7 +10,7 @@ kwargs:
     scale_to_fit:
       image_size: [256, 256]
   image_size: [256, 256]
-  train_max_steps: 10000
+  train_max_steps: 30000
   save_checkpoints_steps: 1000
   save_summary_steps: 1000
   model_params:

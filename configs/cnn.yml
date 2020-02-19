@@ -1,0 +1,37 @@
+method: 'train_cnn'
+model_dir: './logs/experiment_sgd'
+
+kwargs:
+  splits: './data/splits.json'
+  train_transforms:
+    scale_to_fit:
+      image_size: [256, 256]
+  test_transforms:
+    scale_to_fit:
+      image_size: [256, 256]
+  image_size: [256, 256]
+  train_max_steps: 10000
+  save_checkpoints_steps: 1000
+  save_summary_steps: 1000
+  model_params:
+    learning_rate:
+      type: 'exponential'
+      learning_rate: 0.01
+      decay_steps: 1000
+      decay_rate: 0.7
+
+  train_dataloading:
+    shuffle_params:
+      buffer_size: 512
+    batch_params:
+      batch_size: 8
+      drop_remainder: True
+    prefetch_params:
+      buffer_size: -1
+    repeat: True
+
+  test_dataloading:
+    batch_params:
+      batch_size: 8
+    prefetch_params:
+      buffer_size: -1

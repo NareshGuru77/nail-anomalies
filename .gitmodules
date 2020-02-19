@@ -1,0 +1,3 @@
+[submodule "AutoAugment"]
+	path = AutoAugment
+	url = https://github.com/DeepVoltaire/AutoAugment.git

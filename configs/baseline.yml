@@ -1,0 +1,2 @@
+method: 'baseline_method'
+splits: './data/splits.json'

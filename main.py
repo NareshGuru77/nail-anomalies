@@ -134,5 +134,19 @@ def main():
     getattr(sys.modules[__name__], method)(config)
 
 
+def get_preds():
+    from tensorflow.contrib import predictor
+    from preprocess import scale_to_fit
+    image = cv2.imread('./data/nailgun/good/1522072665_good.jpeg')
+    image = scale_to_fit(image, **{'image_size': [256, 256]})
+    image = np.expand_dims(image, axis=0)
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    predict_fn = predictor.from_saved_model('./models/saved_model/',
+                                            config=config)
+    predictions = predict_fn({'image': image})
+    print(predictions)
+
+
 if __name__ == '__main__':
     main()
